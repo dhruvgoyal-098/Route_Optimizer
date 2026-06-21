@@ -1,5 +1,4 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/authRoutes');
@@ -13,14 +12,26 @@ dotenv.config();
 
 const app = express();
 
-// CORS configuration
-const corsOptions = {
-  origin: ['http://localhost:3000', 'http://localhost:3001'],
+// ✅ FIXED: Proper CORS configuration
+const allowedOrigins = [
+  'https://route-optimization-dashboard.vercel.app',
+  'https://route-optimization-dashboard-*.vercel.app',
+  'http://localhost:3000',
+  'http://localhost:3001'
+];
+
+// ✅ Allow all origins for now (for testing)
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
   credentials: true,
   optionsSuccessStatus: 200
-};
+}));
 
-app.use(cors(corsOptions));
+// ✅ Explicitly handle preflight requests
+app.options('*', cors());
+
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
@@ -34,6 +45,21 @@ app.use('/api/analytics', analyticsRoutes);
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'Route Optimization API',
+    version: '1.0.0',
+    endpoints: {
+      auth: '/api/auth',
+      routes: '/api/routes',
+      vehicles: '/api/vehicles',
+      deliveries: '/api/deliveries',
+      analytics: '/api/analytics'
+    }
+  });
 });
 
 // Error handling
