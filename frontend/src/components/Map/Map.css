@@ -1,0 +1,24 @@
+.custom-marker {
+  background: transparent;
+  border: none;
+}
+
+.popup-content h4 {
+  margin: 0 0 0.25rem 0;
+  color: #1f2937;
+}
+
+.popup-content p {
+  margin: 0.25rem 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.leaflet-container {
+  border-radius: 0.5rem;
+}
+
+.start-marker, .end-marker {
+  background: transparent;
+  border: none;
+}
